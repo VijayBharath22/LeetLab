@@ -23,6 +23,21 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    avatar: {
+      type: {
+        url: String,
+        localPath: String,
+      },
+      default: {
+        url: `https://via.placeholder.com/200x200.png`,
+        localPath: "",
+      },
+    },
+    role: {
+      type: String,
+      enum: userRolesEnum,
+      default: userRoles.USER,  
+    },
     token: String,
     tokenExpiryTime: Date,
     refreshToken: String,
