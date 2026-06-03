@@ -68,4 +68,4 @@ const createResetPasswordMailgenContent = (name, resetURL) => {
   };
 };
 
-export { sendEmail, createVerificationMailgenContent };
+export { sendEmail, createVerificationMailgenContent, createResetPasswordMailgenContent };

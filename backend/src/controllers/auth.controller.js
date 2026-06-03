@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import apiError from "../utils/api-error.js";
 import apiResponce from "../utils/api-responce.js";
-import { sendEmail, createVerificationMailgenContent } from "../utils/mail.js";
+import { sendEmail, createVerificationMailgenContent, createResetPasswordMailgenContent } from "../utils/mail.js";
 import { asyncHandler } from "../utils/async-hander.js";
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -48,7 +48,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   res.cookie("refreshToken", refreshToken, cookieOptions);
 
-  const registrationURL = `http://localhost:3000/verify-email/${token}`;
+  const registrationURL = `http://localhost:3000/api/v1/auth/verifyEmail/${token}`;
 
   const mailgenContent = createVerificationMailgenContent(
     user.name,
@@ -157,21 +157,85 @@ const logoutUser = async (req, res) => {
     .json(new apiResponce(200, "User logged out successfully"));
 };
 
-const refreshToken = async (req, res) => {};
+const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    throw new apiError(400, "Email is required");
+  }
 
-const forgotPassword = async (req, res) => {};
+  const user = await User.findOne({email});
+  if (!user) {
+    throw new apiError(400, "User not found");
+  }
 
-const forgotPasswordToken = async (req, res) => {};
+  const { hashedtoken, token, expiryTime } = await user.generateTemporaryToken();
+  user.token = hashedtoken;
+  user.tokenExpiryTime = expiryTime;
+  await user.save();
 
-const resetPassword = async (req, res) => {};
+  const forgotPasswordURL = `http://localhost:3000/api/v1/auth/reset-password/${token}`;
+
+  const mailgenContent = createResetPasswordMailgenContent(user.name, forgotPasswordURL);
+
+  await sendEmail({
+    email: user.email,
+    subject: "Password Reset",
+    mailgenContent,
+  });
+
+  return res
+    .status(200)
+    .json(new apiResponce(200, "Password reset email sent successfully"));
+});
+
+const resetPassword = asyncHandler(async (req, res) => {
+  const { token } = req.params;
+
+  if (!token) {
+    throw new apiError(400, "Token is required");
+  }
+
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  const user = await User.findOne({
+    token: hashedToken,
+    tokenExpiryTime: {
+      $gt: Date.now(),
+    },
+  });
+
+  if (!user) {
+    throw new apiError(400, "Invalid or expired token");
+  }
+
+  const { password } = req.body;
+
+  if (!password) {
+    throw new apiError(400, "Password is required");
+  }
+
+  user.password = password;
+  user.token = undefined;
+  user.tokenExpiryTime = undefined;
+  user.refreshToken = undefined;
+  user.refreshTokenExpiry = undefined;
+
+  res.clearCookie("accessToken");
+  res.clearCookie("refreshToken");
+
+  await user.save();
+
+  return res
+    .status(200)
+    .json(new apiResponce(200, "Password reset successfully"));
+
+}) ;
 
 export {
   registerUser,
   verifyEmail,
   loginUser,
   logoutUser,
-  refreshToken,
   forgotPassword,
-  forgotPasswordToken,
   resetPassword,
 };

@@ -58,11 +58,7 @@ const refreshTokenHandler = async (req, res, next) => {
     req.userId = verifyRefreshToken.id;
 
     next();
-    return res.status(200).json(
-      new apiResponce(200, "Access token refreshed successfully", {
-        accessToken,
-      }),
-    );
+    
   } catch (error) {
     throw new apiError(401, "login again");
   }

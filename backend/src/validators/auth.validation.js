@@ -27,5 +27,24 @@ const loginValidation = () => {
   ];
 }
 
+const resetPasswordValidation = () => {
+  return [
+    body("password")
+      .isLength({ min: 6 })
+      .withMessage("Password must be at least 6 characters"),
+  ];
+}
 
-export { registerValidation, loginValidation };
+const forgetPassowrdValidation = () => {
+  return [
+    body("email")
+      .trim()
+      .notEmpty()
+      .withMessage("Email is required")
+      .isEmail()
+      .withMessage("Valid email is required"),
+  ];
+}
+
+
+export { registerValidation, loginValidation, resetPasswordValidation, forgetPassowrdValidation };
