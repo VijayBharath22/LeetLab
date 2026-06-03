@@ -33,24 +33,22 @@ const userSchema = new mongoose.Schema(
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
-    return next();
+    return;
   }
   this.password = await bcrypt.hash(this.password, 10);
-  next();
 });
 
-
-userSchema.methods.generateAccessToken = async function () {
-  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: "15m",
+userSchema.methods.generateAccessToken = function () {
+  return jwt.sign({ id: this._id }, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: process.env.ACCESS_TOKEN_EXPIRATION,
   });
 };
 
-userSchema.methods.generateRefreshToken = async function () {
+userSchema.methods.generateRefreshToken = function () {
   const refreshToken = jwt.sign(
     { id: this._id },
-    process.env.JWT_REFRESH_SECRET,
-    { expiresIn: "7d" },
+    process.env.REFRESH_TOKEN_SECRET,
+    { expiresIn: process.env.REFRESH_TOKEN_EXPIRATION },
   );
   this.refreshToken = refreshToken;
   this.refreshTokenExpiry = Date.now() + 7 * 24 * 60 * 60 * 1000;
@@ -58,11 +56,11 @@ userSchema.methods.generateRefreshToken = async function () {
 };
 
 userSchema.methods.generateTemporaryToken = async function () {
-    const token = crypto.randomBytes(32).toString("hex");
-    const hashedtoken = crypto.createHash("sha256").update(token).digest("hex");
-    const expiryTime = Date.now() + 60 * 60 * 1000;
-    return { hashedtoken, token, expiryTime };
-}  
+  const token = crypto.randomBytes(32).toString("hex");
+  const hashedtoken = crypto.createHash("sha256").update(token).digest("hex");
+  const expiryTime = Date.now() + 60 * 60 * 1000;
+  return { hashedtoken, token, expiryTime };
+};
 
 const userModel = mongoose.model("User", userSchema);
 

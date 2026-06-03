@@ -3,83 +3,159 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import apiError from "../utils/api-error.js";
-import apiResponse from "../utils/api-responce.js";
+import apiResponce from "../utils/api-responce.js";
+import { sendEmail, createVerificationMailgenContent } from "../utils/mail.js";
+import { asyncHandler } from "../utils/async-hander.js";
 
-const registerUser = async (req, res) => {
+const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
+
   if (!name || !email || !password) {
-    return new apiResponce(400, "All fields are required");
+    throw new apiError(400, "All fields are required");
   }
-  try {
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return new apiResponce(400, "User already exists");
-    }
-    const { hashedtoken, token, expiryTime } = User.generateTemporaryToken();
 
-    const user = new User({
-      name,
-      email,
-      password,
-      token: hashedtoken,
-      tokenExpiryTime: expiryTime,
-    });
-    const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
-    await user.save();
+  const existingUser = await User.findOne({ email });
 
-    cookieOptions = {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-    };
-    res.cookie("accessToken", accessToken, cookieOptions);
-    res.cookie("refreshToken", refreshToken, cookieOptions);
+  if (existingUser) {
+    throw new apiError(400, "User already exists with this email");
+  }
 
-    const registrationURL = `http://localhost:3000/verify-email/${token}`;
-    const mailgenContent = User.createVerificationMailgenContent(
-      user.name,
-      registrationURL,
+  const user = new User({
+    name,
+    email,
+    password,
+  });
+
+  const { hashedtoken, token, expiryTime } =
+    await user.generateTemporaryToken();
+
+  user.token = hashedtoken;
+  user.tokenExpiryTime = expiryTime;
+
+  const accessToken = user.generateAccessToken();
+
+  const refreshToken = user.generateRefreshToken();
+
+  await user.save();
+
+  const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  };
+
+  res.cookie("accessToken", accessToken, cookieOptions);
+
+  res.cookie("refreshToken", refreshToken, cookieOptions);
+
+  const registrationURL = `http://localhost:3000/verify-email/${token}`;
+
+  const mailgenContent = createVerificationMailgenContent(
+    user.name,
+    registrationURL,
+  );
+
+  await sendEmail({
+    email: user.email,
+    subject: "Email Verification",
+    mailgenContent,
+  });
+
+  return res
+    .status(201)
+    .json(
+      new apiResponce(
+        201,
+        "User registered successfully. Please check your email to verify your account.",
+        { user },
+      ),
     );
-    await sendEmail({
-      name: user.name,
-      subject: "Email Verification",
-      mailgenContent,
-    });
+});
 
-    return new apiResponce(201, "User registered successfully", user);
-  } catch (error) {
-    return new apiError(500, "error in user register", error.message);
-  }
-};
+const verifyEmail = asyncHandler(async (req, res) => {
+  const { token } = req.params;
 
-const verifyEmail = async (req, res) => {
-  const { token } = req.query;
   if (!token) {
-    return new apiResponce(400, "Token is required");
+    throw new apiError(400, "Token is required");
   }
-  try {
-    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
-    const user = await User.findOne({
-      token: hashedToken,
-      tokenExpiryTime: { $gt: Date.now() },
-    });
-    if (!user) {
-      return new apiResponce(400, "Invalid or expired token");
-    }
-    user.isVerified = true;
-    user.token = undefined;
-    user.expiryTime = undefined;
-    await user.save();
-    return new apiResponce(200, "Email verified successfully", user);
-  } catch (error) {
-    return new apiError(500, "error in email verification", error.message);
+
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  const user = await User.findOne({
+    token: hashedToken,
+    tokenExpiryTime: {
+      $gt: Date.now(),
+    },
+  });
+
+  if (!user) {
+    throw new apiError(400, "Invalid or expired token");
   }
+
+  user.isVerified = true;
+  user.token = undefined;
+  user.tokenExpiryTime = undefined;
+
+  await user.save();
+
+  return res
+    .status(200)
+    .json(new apiResponce(200, "Email verified successfully", user));
+});
+
+const loginUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    throw new apiError(400, "All fields are required");
+  }
+  const user = await User.findOne({
+    email,
+  });
+
+  if (!user) {
+    throw new apiError(400, "User not found");
+  }
+  if (!user.isVerified) {
+    throw new apiError(400, "Please verify your email before logging in");
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+
+  if (!isPasswordValid) {
+    throw new apiError(400, "Invalid credentials");
+  }
+
+  const accessToken = user.generateAccessToken();
+
+  const refreshToken = user.generateRefreshToken();
+
+  const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  };
+
+  res.cookie("accessToken", accessToken, cookieOptions);
+  res.cookie("refreshToken", refreshToken, cookieOptions);
+  await user.save();
+
+  return res
+    .status(200)
+    .json(new apiResponce(200, "User logged in successfully", user));
+});
+
+const logoutUser = async (req, res) => {
+  res.clearCookie("accessToken");
+  res.clearCookie("refreshToken");
+  const user = await User.findById(req.userId);
+  user.refreshToken = undefined;
+  user.refreshTokenExpiry = undefined;
+  await user.save();
+  return res
+    .status(200)
+    .json(new apiResponce(200, "User logged out successfully"));
 };
-
-const loginUser = async (req, res) => {};
-
-const logoutUser = async (req, res) => {};
 
 const refreshToken = async (req, res) => {};
 

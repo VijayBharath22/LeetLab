@@ -6,7 +6,7 @@ const sendEmail = async (options) => {
     theme: "default",
     product: {
       name: "Leetlab",
-      link: process.env.FRONTEND_URL,
+      link: "https://mailgen.js/",
     },
   });
 
@@ -17,7 +17,7 @@ const sendEmail = async (options) => {
     host: process.env.SMTP_HOST,
     port: process.env.SMTP_PORT,
     auth: {
-      user: process.env.SMTP_EMAIL,
+      user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASSWORD,
     },
   });
@@ -25,8 +25,8 @@ const sendEmail = async (options) => {
     from: process.env.SMTP_EMAIL,
     to: options.email,
     subject: options.subject,
-    html: options.htmlMailgenContent,
-    text: options.textMailgenContent,
+    html: htmlMailgenContent,
+    text: textMailgenContent,
   });
 };
 
