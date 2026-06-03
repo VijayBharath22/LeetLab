@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
+import { userRolesEnum, userRoles } from "../utils/constants.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -28,15 +29,15 @@ const userSchema = new mongoose.Schema(
         url: String,
         localPath: String,
       },
-      default: {
-        url: `https://via.placeholder.com/200x200.png`,
-        localPath: "",
-      },
+        default: {
+          url: "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y",
+          localPath: "",
+        },
     },
     role: {
       type: String,
-      enum: userRolesEnum,
-      default: userRoles.USER,  
+      enum: userRoles,
+      default: userRolesEnum.USER,
     },
     token: String,
     tokenExpiryTime: Date,

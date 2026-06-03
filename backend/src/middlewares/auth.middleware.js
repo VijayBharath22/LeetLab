@@ -16,7 +16,8 @@ const authMiddleware = async (req, res, next) => {
       process.env.ACCESS_TOKEN_SECRET,
     );
 
-    req.userId = verifyAccessToken.id;
+    const user = await User.findById(verifyAccessToken.id);
+    req.user = user;
     next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {
@@ -26,6 +27,7 @@ const authMiddleware = async (req, res, next) => {
     }
   }
 };
+
 
 const refreshTokenHandler = async (req, res, next) => {
   const refreshToken = req.cookies.refreshToken;
@@ -55,7 +57,7 @@ const refreshTokenHandler = async (req, res, next) => {
     res.cookie("accessToken", accessToken, cookieOptions);
     res.cookie("refreshToken", newRefreshToken, cookieOptions);
 
-    req.userId = verifyRefreshToken.id;
+    req.user = user;
 
     next();
     

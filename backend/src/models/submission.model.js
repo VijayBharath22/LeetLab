@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 
 const submissionSchema = new mongoose.Schema({
     userId: {

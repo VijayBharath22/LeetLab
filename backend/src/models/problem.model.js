@@ -1,5 +1,13 @@
+import mongoose from "mongoose";
+import {difficultyLevels} from "../utils/constants.js";
+
 const problemSchema = new mongoose.Schema(
   {
+    questionId: {
+      type: Number,
+      required: true,
+      unique: true,
+    },
     title: {
       type: String,
       required: true,
