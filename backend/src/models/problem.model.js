@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import {difficultyLevels} from "../utils/constants.js";
+import { difficultyLevels } from "../utils/constants.js";
 
 const problemSchema = new mongoose.Schema(
   {

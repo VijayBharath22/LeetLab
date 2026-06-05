@@ -1,13 +1,12 @@
 import express from "express";
-import {executeCode} from "../controllers/execute-code.controller.js"
-import {authMiddleware} from "../middlewares/auth.middleware.js"
+import { submitCode } from "../controllers/execute-code.controller.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/execute-code",authMiddleware, executeCode)
+router.post("/", authMiddleware, submitCode);
 
 export default router;
-
 
 /*
 Vijay@fedora:~$ curl -X POST "http://192.168.1.2:2358/submissions?base64_encoded=false&wait=true" -H "Content-Type: application/json" -d '{

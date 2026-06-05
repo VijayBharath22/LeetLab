@@ -6,6 +6,7 @@ import cookies from "cookie-parser";
 import authRoutes from "./routes/auth.routes.js";
 import problemRoutes from "./routes/problem.routes.js";
 import submissionRoutes from "./routes/submission.routes.js";
+import submitCodeRoutes from "./routes/execute-code.routes.js";
 
 dotenv.config();
 
@@ -23,7 +24,8 @@ const PORT = process.env.PORT || 5000;
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/problems", problemRoutes);
-app.use("/api/v1/submissions", submissionRoutes)
+app.use("/api/v1/submissions", submissionRoutes);
+app.use("/api/v1/submit-code", submitCodeRoutes);
 
 db()
   .then(() => {
