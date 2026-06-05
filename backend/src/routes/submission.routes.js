@@ -1,8 +1,11 @@
 import express from "express";
-import { getAllSubmission, getSubmissionsForProblem } from "../controllers/submission.controller.js";
-import {authMiddleware} from "../middlewares/auth.middleware.js"
+import {
+  getAllSubmission,
+  getSubmissionsForProblem,
+} from "../controllers/submission.controller.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 
-const submissionRouter = express.Router();
+const submissionRoutes = express.Router();
 
 submissionRoutes.get("/get-all-submissions", authMiddleware, getAllSubmission);
 submissionRoutes.get(
@@ -11,4 +14,4 @@ submissionRoutes.get(
   getSubmissionsForProblem,
 );
 
-export default submissionRouter;
+export default submissionRoutes;

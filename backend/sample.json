@@ -1,0 +1,197 @@
+{
+  "questionId": 1,
+  "title": "Add Two Numbers",
+  "description": "Given two integers a and b, return their sum.",
+  "difficulty": "easy",
+  "tags": ["math", "addition"],
+  "exampleTestCases": [
+    {
+      "input": "3 7",
+      "output": "10",
+      "explanation": "3 + 7 = 10"
+    },
+    {
+      "input": "-5 12",
+      "output": "7",
+      "explanation": "-5 + 12 = 7"
+    }
+  ],
+  "constraints": "-10^9 <= a, b <= 10^9",
+  "hints": ["Read two numbers from input", "Return their sum"],
+  "hiddenTestCases": [
+    {
+      "input": "100 200",
+      "output": "300"
+    },
+    {
+      "input": "-500 -600",
+      "output": "-1100"
+    },
+    {
+      "input": "0 0",
+      "output": "0"
+    }
+  ],
+  "starterCode": [
+    {
+      "language": "javascript",
+      "code": "function addTwoNumbers(a, b) {\n  return a + b;\n}"
+    },
+    {
+      "language": "python",
+      "code": "def add_two_numbers(a, b):\n    return a + b"
+    },
+    {
+      "language": "java",
+      "code": "public static int addTwoNumbers(int a, int b) {\n    return a + b;\n}"
+    }
+  ],
+  "referenceSolutions": [
+    {
+      "language": "javascript",
+      "code": "const fs = require('fs'); const [a,b] = fs.readFileSync(0,'utf8').trim().split(' ').map(Number); console.log(a+b);"
+    },
+    {
+      "language": "python",
+      "code": "a,b = map(int,input().split()); print(a+b)"
+    },
+    {
+      "language": "java",
+      "code": "Scanner sc = new Scanner(System.in); int a=sc.nextInt(); int b=sc.nextInt(); System.out.println(a+b);"
+    }
+  ]
+}
+
+{
+  "questionId": 2,
+  "title": "Find Maximum Number",
+  "description": "Given two integers a and b, print the larger number.",
+  "difficulty": "easy",
+  "tags": ["math", "comparison"],
+  "exampleTestCases": [
+    {
+      "input": "5 10",
+      "output": "10",
+      "explanation": "10 is greater than 5"
+    },
+    {
+      "input": "-5 -2",
+      "output": "-2",
+      "explanation": "-2 is greater than -5"
+    }
+  ],
+  "constraints": "-10^9 <= a, b <= 10^9",
+  "hints": [
+    "Use comparison operators",
+    "Use max() if available"
+  ],
+  "hiddenTestCases": [
+    {
+      "input": "100 20",
+      "output": "100"
+    },
+    {
+      "input": "-5 -10",
+      "output": "-5"
+    },
+    {
+      "input": "999999999 999999998",
+      "output": "999999999"
+    }
+  ],
+  "starterCode": [
+    {
+      "language": "javascript",
+      "code": "function findMax(a, b) {\n  // Write your code here\n}"
+    },
+    {
+      "language": "python",
+      "code": "def find_max(a, b):\n    pass"
+    },
+    {
+      "language": "java",
+      "code": "public static int findMax(int a, int b) {\n    return 0;\n}"
+    }
+  ],
+  "referenceSolutions": [
+    {
+      "language": "javascript",
+      "code": "const fs=require('fs'); const [a,b]=fs.readFileSync(0,'utf8').trim().split(' ').map(Number); console.log(Math.max(a,b));"
+    },
+    {
+      "language": "python",
+      "code": "a,b=map(int,input().split()); print(max(a,b))"
+    },
+    {
+      "language": "java",
+      "code": "Scanner sc=new Scanner(System.in); int a=sc.nextInt(); int b=sc.nextInt(); System.out.println(Math.max(a,b));"
+    }
+  ]
+}
+
+{
+  "questionId": 3,
+  "title": "Check Even Or Odd",
+  "description": "Given an integer n, determine whether it is EVEN or ODD.",
+  "difficulty": "easy",
+  "tags": ["math", "modulo"],
+  "exampleTestCases": [
+    {
+      "input": "8",
+      "output": "EVEN",
+      "explanation": "8 is divisible by 2"
+    },
+    {
+      "input": "7",
+      "output": "ODD",
+      "explanation": "7 is not divisible by 2"
+    }
+  ],
+  "constraints": "-10^9 <= n <= 10^9",
+  "hints": [
+    "Use modulo operator (%)",
+    "Check if n % 2 == 0"
+  ],
+  "hiddenTestCases": [
+    {
+      "input": "0",
+      "output": "EVEN"
+    },
+    {
+      "input": "-3",
+      "output": "ODD"
+    },
+    {
+      "input": "100",
+      "output": "EVEN"
+    }
+  ],
+  "starterCode": [
+    {
+      "language": "javascript",
+      "code": "function checkEvenOdd(n) {\n  // Write your code here\n}"
+    },
+    {
+      "language": "python",
+      "code": "def check_even_odd(n):\n    pass"
+    },
+    {
+      "language": "java",
+      "code": "public static String checkEvenOdd(int n) {\n    return \"\";\n}"
+    }
+  ],
+  "referenceSolutions": [
+    {
+      "language": "javascript",
+      "code": "const fs=require('fs'); const n=Number(fs.readFileSync(0,'utf8').trim()); console.log(n%2===0?'EVEN':'ODD');"
+    },
+    {
+      "language": "python",
+      "code": "n=int(input()); print('EVEN' if n%2==0 else 'ODD')"
+    },
+    {
+      "language": "java",
+      "code": "Scanner sc=new Scanner(System.in); int n=sc.nextInt(); System.out.println(n%2==0?\"EVEN\":\"ODD\");"
+    }
+  ]
+}

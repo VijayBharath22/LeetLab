@@ -1,6 +1,6 @@
-import User from "../models/User.js";
-import Problem from "../models/Problem.js";
-import asyncHandler from "../utils/asyncHandler.js";
+import User from "../models/user.model.js";
+import Problem from "../models/problem.model.js";
+import { asyncHandler } from "../utils/async-hander.js";
 import { userRolesEnum } from "../utils/constants.js";
 
 const getAllProblems = asyncHandler(async (req, res) => {
@@ -30,7 +30,7 @@ const createProblem = asyncHandler(async (req, res) => {
     return res.status(403).json({ message: "Only admin can create problems" });
   }
   const existingProblem = await Problem.findOne({
-    questionId,
+    questionId: req.body.questionId,
   });
   if (existingProblem) {
     return res.status(400).json({ message: "Problem already exists" });

@@ -1,4 +1,5 @@
 import { body } from "express-validator";
+import { difficultyLevels } from "../utils/constants.js";
 
 const createProblemValidation = () => {
   return [
@@ -26,13 +27,11 @@ const createProblemValidation = () => {
       .isArray()
       .withMessage("Example Test Cases must be an array"),
     body("constraints").notEmpty().withMessage("Constraints is required"),
-    body("hints").isArray().withMessage("Hints must be an array"),
-    body("hiddenTestCases")
-      .isArray()
-      .withMessage("Hidden Test Cases must be an array"),
     body("starterCode").notEmpty().withMessage("Starter Code is required"),
     body("referenceSolutions")
       .notEmpty()
       .withMessage("Reference Solutions is required"),
   ];
 };
+
+export { createProblemValidation };
