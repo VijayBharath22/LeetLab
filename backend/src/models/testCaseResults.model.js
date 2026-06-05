@@ -1,29 +1,30 @@
-import mongooose from "mongoose";
+import mongoose from "mongoose";
 
-const testCaseResultSchema = new mongoose.Schema({
-    questionId: {
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Problem",
-        required:true
+const testCaseResultSchema = new mongoose.Schema(
+  {
+    submissionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Submission",
+      required: true,
     },
-    userId: {
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"User",
-        required:true
-    },
-    stdin:String,
-    expected_output:String,
+    stdin: String,
+    expected_output: String,
     status: {
-        id: Number,
-        description: String,
+      id: Number,
+      description: String,
     },
-    stdout:String,
-    compile_output:String,
-    message:String,
+    stdout: String,
+    compile_output: String,
+    message: String,
     time: Number,
-    memory: Number
-},{timestamps:true});
+    memory: Number,
+  },
+  { timestamps: true },
+);
 
-const testCaseResultModel = mongoose.model("TestCaseResult", testCaseResultSchema);
+const testCaseResultModel = mongoose.model(
+  "TestCaseResult",
+  testCaseResultSchema,
+);
 
 export default testCaseResultModel;

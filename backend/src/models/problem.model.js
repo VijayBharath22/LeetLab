@@ -55,10 +55,6 @@ const problemSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    submissionsId:[{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Submission"
-    }]
   },
   { timestamps: true },
 );

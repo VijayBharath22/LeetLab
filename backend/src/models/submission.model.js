@@ -1,26 +1,26 @@
 import mongoose from "mongoose";
 
-
-const submissionSchema = new mongoose.Schema({
+const submissionSchema = new mongoose.Schema(
+  {
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     problemId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Problem",
-        required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Problem",
+      required: true,
     },
     timeTaken: Number,
     memoryUsed: Number,
     status: {
-        code: Number,
-        message: String,
+      code: Number,
+      message: String,
     },
     language: {
-        code: String,
-        name: String,
+      code: String,
+      name: String,
     },
     sourceCode: String,
     compileOutput: String,
@@ -28,12 +28,11 @@ const submissionSchema = new mongoose.Schema({
     stdout: String,
     stdin: String,
     token: String,
-    testCaseResults: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "TestCaseResult",
-    }],
-}, { timestamps: true });
+    verdict: String,
+  },
+  { timestamps: true },
+);
 
 const submissionModel = mongoose.model("Submission", submissionSchema);
-    
+
 export default submissionModel;
