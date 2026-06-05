@@ -11,15 +11,17 @@ const testCaseResultSchema = new mongoose.Schema({
         ref:"User",
         required:true
     },
-    input:String,
+    stdin:String,
     expected_output:String,
     status: {
-        code: Number,
-        message: String,
+        id: Number,
+        description: String,
     },
-    output:String,
-    timeTaken: Number,
-    memoryUsed: Number
+    stdout:String,
+    compile_output:String,
+    message:String,
+    time: Number,
+    memory: Number
 },{timestamps:true});
 
 const testCaseResultModel = mongoose.model("TestCaseResult", testCaseResultSchema);

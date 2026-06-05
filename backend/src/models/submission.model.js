@@ -28,6 +28,10 @@ const submissionSchema = new mongoose.Schema({
     stdout: String,
     stdin: String,
     token: String,
+    testCaseResults: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "TestCaseResult",
+    }],
 }, { timestamps: true });
 
 const submissionModel = mongoose.model("Submission", submissionSchema);
