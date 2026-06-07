@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { verdict } from "../utils/constants.js";
 
 const submissionSchema = new mongoose.Schema(
   {
@@ -12,23 +13,18 @@ const submissionSchema = new mongoose.Schema(
       ref: "Problem",
       required: true,
     },
-    timeTaken: Number,
-    memoryUsed: Number,
-    status: {
-      code: Number,
-      message: String,
-    },
-    language: {
-      code: String,
-      name: String,
-    },
+    timeTaken: String,
+    memoryUsed: String,
+    status: String,
+    languageId: Number,
     sourceCode: String,
     compileOutput: String,
     stderr: String,
     stdout: String,
     stdin: String,
-    token: String,
-    verdict: String,
+    expected_output: String,
+    token: JSON,
+    verdict: verdict,
   },
   { timestamps: true },
 );

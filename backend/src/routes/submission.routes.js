@@ -2,6 +2,7 @@ import express from "express";
 import {
   getAllSubmission,
   getSubmissionsForProblem,
+  totalSubmissionsForProblem,
 } from "../controllers/submission.controller.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 
@@ -12,6 +13,11 @@ submissionRoutes.get(
   "/get-submission/:problemId",
   authMiddleware,
   getSubmissionsForProblem,
+);
+submissionRoutes.get(
+  "/total-submissions/:problemId",
+  authMiddleware,
+  totalSubmissionsForProblem,
 );
 
 export default submissionRoutes;

@@ -1,10 +1,11 @@
 import express from "express";
-import { submitCode } from "../controllers/execute-code.controller.js";
+import { runCode } from "../controllers/execute-code.controller.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/", authMiddleware, submitCode);
+router.post("/", authMiddleware, runCode
+);
 
 export default router;
 
