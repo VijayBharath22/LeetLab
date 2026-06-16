@@ -49,6 +49,7 @@ const runCode = asyncHandler(async (req, res) => {
       stdin: hiddenTestCases[i].input,
       status: testCaseResult.status.description,
       compile_output: testCaseResult.compile_output,
+      expected_output: hiddenTestCases[i].output,
       time: testCaseResult.time,
       memory: testCaseResult.memory,
       stderr: testCaseResult.stderr,
@@ -90,7 +91,7 @@ const runCode = asyncHandler(async (req, res) => {
   });
 
   if (allPassed) {
-    problemSolved = await Problem.upsert(
+    const problemSolved = await ProblemSolved.findOneAndUpdate(
       {
         userId: req.user._id,
         problemId,
@@ -101,6 +102,7 @@ const runCode = asyncHandler(async (req, res) => {
       },
       {
         upsert: true,
+        new: true,
       },
     );
   }
@@ -108,7 +110,6 @@ const runCode = asyncHandler(async (req, res) => {
   const testCaseResults = finalResults.map((finalResult) => {
     return {
       testCase: finalResult.testcase,
-      stdout: finalResult.stdout,
       submissionId: submission._id,
       stdin: finalResult.stdin,
       expected_output: finalResult.expected_output,
